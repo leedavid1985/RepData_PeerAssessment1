@@ -1,0 +1,118 @@
+---
+title: 'Reproducible Research: Peer Assignment 1'
+output: html_document
+---
+
+#Loading and preprocessing the data
+Read in the data and process, removing incomplete rows.
+
+```{r echo=TRUE}
+myData <- read.csv("activity.csv", colClasses = c("integer", "Date", "factor"))
+myData <- na.exclude(myData)
+rownames(myData) <- 1:nrow(myData)
+```
+
+#What is mean total number of steps taken per day?
+Construct a histogram of the average number of steps per day.
+```{r echo=TRUE}
+library(ggplot2)
+ggplot(myData, aes(date,steps)) +
+  geom_bar(stat = "identity", width = 1.0) +
+  labs(title = "Histogram of Total Number of Steps Taken",
+       x = "Date", y = "Steps")
+```
+
+Calculate the mean and median total number of steps per day.
+```{r echo=TRUE}
+totalSteps <- aggregate(myData$steps,list(myData$date),FUN="sum")[,2]
+mean(totalSteps)
+median(totalSteps)
+```
+
+#What is the average daily activity pattern?
+Make a time series plot of the 5-minute interval, averaged across all days.
+
+```{r echo=TRUE}
+avgSteps <- aggregate(myData$steps,
+                      list(as.numeric(as.character(myData$interval))),
+                      FUN = "mean")
+names(avgSteps) <- c("period","averageSteps")
+ggplot(avgSteps, aes(period, averageSteps)) +
+        geom_line(size = 1.0) +
+        labs(title = "Time Series Plot of 5 Min Interval",
+             x = "5 Min interval", y = "Average Steps Taken")
+```
+
+Which 5-minute interval, on average across all the days in the dataset, contains
+the maximum number of steps?
+```{r echo=TRUE}
+avgSteps[avgSteps$averageSteps == max(avgSteps$averageSteps),]
+```
+
+#Imputing missing values
+Calculate and report the total number of missing values in the dataset.
+```{r echo=TRUE}
+originalData <- read.csv("activity.csv",
+                         colClasses = c("integer", "Date", "factor"))
+sum(is.na(originalData))
+```
+
+Use the impute function from the Hmisc package to impute average number of steps
+across all days.
+```{r echo=TRUE}
+library(Hmisc)
+imputed <- originalData
+imputed$steps <- with(imputed, impute(steps, mean))
+```
+
+Create the histogram for the imputed dataset.
+```{r echo=TRUE}
+ggplot(imputed, aes(date,steps)) +
+        geom_bar(stat = "identity", width = 1.0) +
+        labs(title = "Histogram of Total Number of Steps Taken",
+             x = "Date", y = "Steps")
+```
+
+Look at the averages and medians of the original vs imputed datasets:
+```{r echo=TRUE}
+totalSteps.imputed <- aggregate(imputed$steps,list(imputed$date),FUN="sum")[,2]
+mean(totalSteps.imputed)
+mean(totalSteps)
+median(totalSteps.imputed)
+median(totalSteps)
+```
+
+#Are there differences in activity patterns between weekdays and weekends?
+Create and call a function that uses the weekday() function to assign whether
+the date is a weekday or weekend day.
+```{r echo=TRUE}
+dayOfWeek <- function(date){
+        if(weekdays(date) %in% c("Saturday","Sunday")){
+                return("weekend")
+        }
+        else{
+                return("weekday")
+        }
+}
+
+day <- sapply(imputed$date, dayOfWeek)
+imputed$day <- as.factor(day)
+```
+
+Calculate the average steps per interval, grouped by weekend vs weekday.
+```{r echo=TRUE}
+avgSteps.imputed <- aggregate(imputed$steps,
+                              list(as.numeric(as.character(imputed$interval)),
+                                   imputed$day),
+                              FUN = "mean")
+names(avgSteps.imputed) <- c("period","dayType","averageSteps")
+```
+
+Plot the average steps per interval, grouped by weekend vs weekday.
+```{r echo=TRUE}
+ggplot(avgSteps.imputed, aes(period, averageSteps)) +
+        geom_line(size = 1.0) +
+        facet_grid( . ~ dayType) +
+        labs(title = "Time Series Plot of 5 Min Interval",
+             x = "5 Min interval", y = "Average Steps Taken")
+```

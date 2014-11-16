@@ -55,15 +55,15 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 
 
-<div id="loading-and-preprocessing-the-data" class="section level1">
-<h1>Loading and preprocessing the data</h1>
+<div id="loading-and-preprocessing-the-data" class="section level2">
+<h2>Loading and preprocessing the data</h2>
 <p>Read in the data and process, removing incomplete rows.</p>
 <pre class="r"><code>myData &lt;- read.csv(&quot;activity.csv&quot;, colClasses = c(&quot;integer&quot;, &quot;Date&quot;, &quot;factor&quot;))
 myData &lt;- na.exclude(myData)
 rownames(myData) &lt;- 1:nrow(myData)</code></pre>
 </div>
-<div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level1">
-<h1>What is mean total number of steps taken per day?</h1>
+<div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
+<h2>What is mean total number of steps taken per day?</h2>
 <p>Construct a histogram of the average number of steps per day.</p>
 <pre class="r"><code>library(ggplot2)
 ggplot(myData, aes(date,steps)) +
@@ -78,8 +78,8 @@ mean(totalSteps)</code></pre>
 <pre class="r"><code>median(totalSteps)</code></pre>
 <pre><code>## [1] 10765</code></pre>
 </div>
-<div id="what-is-the-average-daily-activity-pattern" class="section level1">
-<h1>What is the average daily activity pattern?</h1>
+<div id="what-is-the-average-daily-activity-pattern" class="section level2">
+<h2>What is the average daily activity pattern?</h2>
 <p>Make a time series plot of the 5-minute interval, averaged across all days.</p>
 <pre class="r"><code>avgSteps &lt;- aggregate(myData$steps,
                       list(as.numeric(as.character(myData$interval))),
@@ -95,8 +95,8 @@ ggplot(avgSteps, aes(period, averageSteps)) +
 <pre><code>##     period averageSteps
 ## 104    835     206.1698</code></pre>
 </div>
-<div id="imputing-missing-values" class="section level1">
-<h1>Imputing missing values</h1>
+<div id="imputing-missing-values" class="section level2">
+<h2>Imputing missing values</h2>
 <p>Calculate and report the total number of missing values in the dataset.</p>
 <pre class="r"><code>originalData &lt;- read.csv(&quot;activity.csv&quot;,
                          colClasses = c(&quot;integer&quot;, &quot;Date&quot;, &quot;factor&quot;))
@@ -137,8 +137,8 @@ mean(totalSteps.imputed)</code></pre>
 <pre class="r"><code>median(totalSteps)</code></pre>
 <pre><code>## [1] 10765</code></pre>
 </div>
-<div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level1">
-<h1>Are there differences in activity patterns between weekdays and weekends?</h1>
+<div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
+<h2>Are there differences in activity patterns between weekdays and weekends?</h2>
 <p>Create and call a function that uses the weekday() function to assign whether the date is a weekday or weekend day.</p>
 <pre class="r"><code>dayOfWeek &lt;- function(date){
         if(weekdays(date) %in% c(&quot;Saturday&quot;,&quot;Sunday&quot;)){

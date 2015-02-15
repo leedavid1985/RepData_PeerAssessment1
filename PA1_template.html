@@ -201,6 +201,8 @@ hr {
 </head>
 
 <body>
+<p>library(knitr)</p>
+
 <p>##Loading and preprocessing the data
 Read in the data and process, removing incomplete rows.</p>
 
@@ -276,7 +278,30 @@ sum(is.na(originalData))
 across all days.</p>
 
 <pre><code class="r">library(Hmisc)
-imputed &lt;- originalData
+</code></pre>
+
+<pre><code>## Warning: package &#39;Hmisc&#39; was built under R version 3.1.2
+</code></pre>
+
+<pre><code>## Loading required package: grid
+## Loading required package: lattice
+## Loading required package: survival
+## Loading required package: splines
+## Loading required package: Formula
+</code></pre>
+
+<pre><code>## Warning: package &#39;Formula&#39; was built under R version 3.1.2
+</code></pre>
+
+<pre><code>## 
+## Attaching package: &#39;Hmisc&#39;
+## 
+## The following objects are masked from &#39;package:base&#39;:
+## 
+##     format.pval, round.POSIXt, trunc.POSIXt, units
+</code></pre>
+
+<pre><code class="r">imputed &lt;- originalData
 imputed$steps &lt;- with(imputed, impute(steps, mean))
 </code></pre>
 
